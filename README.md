@@ -1,16 +1,24 @@
 # dom-splicer
 
-[![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/dom-splicer/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/dom-splicer?branch=master) [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC) [![Build Status](https://travis-ci.org/WebReflection/dom-splicer.svg?branch=master)](https://travis-ci.org/WebReflection/dom-splicer)
+[![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/dom-splicer/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/dom-splicer?branch=master) [![Build Status](https://travis-ci.org/WebReflection/dom-splicer.svg?branch=master)](https://travis-ci.org/WebReflection/dom-splicer) [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC)
 
 A minimalist, performance oriented, splicer able to mutate an element's `childNodes` directly, or indirectly.
 
+### Configuration
+
+The class constructor accepts an object with these properties:
+
+  * `target`, **mandatory** target element to mutate on splices
+  * `childNodes`, _optional_ `Array` of zero, one, or more nodes (already childNodes of the target). It is possible to use this Array as facade for a range of elements.
+  * `item`, _optional_ `Function` invoked per each item that is being removed or inserted. If the given `childNodes` contains nodes wraps, you can return their real content once the `item(wrap)` is invoked.
+  * `before`, _optional_ `Node` to use as anchor for the range of `childNodes` to modify.
+
+### Examples
+
+Basic DOM manipulation.
 ```js
 const mutator = new DOMSplicer({
-  target: document.body,
-  // optional array that mirrors
-  // this splicer childNodes
-  childNodes: []
-  // it's the target.childNodes by default
+  target: document.body
 });
 
 // unshift a, b
@@ -34,17 +42,7 @@ mutator.splice(
 );
 ```
 
-### Configuration
-
-The class constructor accepts an object with these properties:
-
-  * `target`, **mandatory** target element to mutate on splices
-  * `childNodes`, _optional_ `Array` of zero, one, or more nodes (already childNodes of the target). It is possible to use this Array as facade for a range of elements.
-  * `item`, _optional_ `Function` invoked per each item that is being removed or inserted. If the given `childNodes` contains nodes wraps, you can return their real content once the `item(wrap)` is invoked.
-  * `before`, _optional_ `Node` to use as anchor for the range of `childNodes` to modify.
-
-### Example
-
+Using a range of node wraps.
 ```js
 // demo purpose, two nodes on the body, a placeholder in between
 document.body.innerHTML = '<b>1</b><!--ph--><b>5</b>';
