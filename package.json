@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Array splice to mutate DOM nodes",
   "main": "cjs/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "build": "npm run cjs && npm run babel && npm run min && npm run ie8 && npm run size && npm run test",
     "babel": "echo \"var DOMSplicer = $(asbundle ./esm/index.js)\" | babel --presets=es2015 > index.js",
