@@ -1,0 +1,69 @@
+/*! (c) Andrea Giammarchi (ISC) */
+
+const { min, max } = Math;
+const arraySplice = [].splice;
+
+const fragment = (target, item, list, i, length) => {
+  const f = target.ownerDocument.createDocumentFragment();
+  while (i < length) f.appendChild(item(list[i++]));
+  return f;
+};
+
+const identity = thing => thing;
+
+const remove = (target, item, list, i, length) => {
+  while (i < length--) {
+    target.removeChild(item(list[length]));
+  }
+};
+
+// not using a class to avoid Babel bloat
+function DOMSplicer(options) {
+  const { target } = options;
+  const childNodes = options.childNodes || target.childNodes;
+  this.target = target;
+  this.childNodes = childNodes;
+  this.item = options.item || identity;
+  this.applySplice = childNodes !== target.childNodes;
+  this.before = options.before || null;
+  this.placeHolder = target.ownerDocument.createComment('');
+}
+
+DOMSplicer.prototype.splice = function splice(start, deleteCount) {
+  const aLength = arguments.length;
+  if (aLength < 1) return [];
+  const item = this.item;
+  const target = this.target;
+  const childNodes = this.childNodes;
+  const placeHolder = this.placeHolder;
+  const len = childNodes.length;
+  const index = start < 0 ?
+    max((len + start), 0) :
+    min(start, len);
+  const count = aLength < 2 ?
+    (len - index) :
+    min(max(deleteCount, 0), len - index);
+  target.insertBefore(
+    placeHolder,
+    index < len ? item(childNodes[index]) : this.before
+  );
+  let copy = childNodes;
+  let added = 1;
+  if (this.applySplice) {
+    added = 0;
+    copy = copy.slice();
+    arraySplice.apply(childNodes, arguments);
+  }
+  if (count) remove(target, item, copy, added + index, added + index + count);
+  if (aLength > 2) {
+    target.insertBefore(
+      aLength > 3 ?
+        fragment(target, item, arguments, 2, aLength) :
+        item(arguments[2]),
+      placeHolder
+    );
+  }
+  target.removeChild(placeHolder);
+};
+
+export default DOMSplicer;

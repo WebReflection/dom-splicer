@@ -1,0 +1,43 @@
+{
+  "name": "dom-splicer",
+  "version": "0.0.0",
+  "description": "Array splice to mutate DOM nodes",
+  "main": "cjs/index.js",
+  "scripts": {
+    "build": "npm run cjs && npm run babel && npm run min && npm run ie8 && npm run size && npm run test",
+    "babel": "echo \"var DOMSplicer = $(asbundle ./esm/index.js)\" | babel --presets=es2015 > index.js",
+    "cjs": "ascjs ./esm ./cjs",
+    "ie8": "sed -i 's/.default/[\"default\"]/g' index.js min.js",
+    "min": "uglifyjs index.js --comments=/^!/ -mco min.js",
+    "size": "cat index.js | wc -c;cat min.js | wc -c;gzip -c9 min.js | wc -c",
+    "test": "istanbul cover test/node.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/dom-splicer.git"
+  },
+  "keywords": [
+    "DOM",
+    "splice",
+    "manipulation",
+    "Array",
+    "mutation"
+  ],
+  "author": "Andrea Giammarchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WebReflection/dom-splicer/issues"
+  },
+  "homepage": "https://github.com/WebReflection/dom-splicer#readme",
+  "devDependencies": {
+    "asbundle": "^2.4.0",
+    "ascjs": "^2.4.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "basichtml": "^0.11.0",
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
+    "uglify-es": "^3.1.10",
+    "uglify-js": "^2.8.29"
+  }
+}
