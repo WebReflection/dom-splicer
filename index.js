@@ -57,7 +57,7 @@ var DOMSplicer = function (cache, modules) {
 
   DOMSplicer.prototype.splice = function splice(start, deleteCount) {
     var aLength = arguments.length;
-    if (aLength < 1) return [];
+    if (aLength < 1) return;
     var item = this.item;
     var target = this.target;
     var childNodes = this.childNodes;

@@ -32,7 +32,7 @@ function DOMSplicer(options) {
 
 DOMSplicer.prototype.splice = function splice(start, deleteCount) {
   const aLength = arguments.length;
-  if (aLength < 1) return [];
+  if (aLength < 1) return;
   const item = this.item;
   const target = this.target;
   const childNodes = this.childNodes;
