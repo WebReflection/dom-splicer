@@ -8,10 +8,10 @@ A minimalist, performance oriented, splicer able to mutate an element's `childNo
 
 The class constructor accepts an object with these properties:
 
-  * `target`, **mandatory** target element to mutate on splices
-  * `childNodes`, _optional_ `Array` of zero, one, or more nodes (already childNodes of the target). It is possible to use this Array as facade for a range of elements.
-  * `item`, _optional_ `Function` invoked per each item that is being removed or inserted. If the given `childNodes` contains nodes wraps, you can return their real content once the `item(wrap)` is invoked.
-  * `before`, _optional_ `Node` to use as anchor for the range of `childNodes` to modify.
+  * `target`, the target element, or its wrap, to mutate on splice calls. If omitted, the `before.parentNode` will be used instead.
+  * `childNodes`, _optional_ `Array` of zero, one, or more nodes (already childNodes of the target). It is possible to use this Array as facade for a range of elements. If omitted, and `target` is specified, but not the `before` node, its `childNodes` will be used instead.
+  * `item`, _optional_ `Function` invoked per each item that is being removed or inserted. If the given `childNodes` contains nodes wraps, you can return their real content once the `item(wrap)` is invoked. Used to understand `target` and/or `before` too.
+  * `before`, _optional_ `Node` to use as anchor for the range of `childNodes` to modify. If specified, and `target` is not, its `parentNode` will be used per each splice. This is handy when a node to use as anchor is created inside a fragment but moved, or appended, later on.
 
 ### Examples
 

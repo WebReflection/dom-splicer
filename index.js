@@ -20,6 +20,7 @@ var DOMSplicer = function (cache, modules) {
   'use strict';
   /*! (c) Andrea Giammarchi (ISC) */
 
+  var isArray = Array.isArray;
   var min = Math.min,
       max = Math.max;
 
@@ -44,28 +45,31 @@ var DOMSplicer = function (cache, modules) {
 
   // not using a class to avoid Babel bloat
   function DOMSplicer(options) {
-    var target = options.target;
+    var before = options.before,
+        target = options.target;
 
-    var childNodes = options.childNodes || target.childNodes;
-    this.target = target;
+    var item = options.item || identity;
+    var childNodes = options.childNodes || (before ? [] : target.childNodes);
+    this.item = item;
+    this.target = target ? item(target) : null;
+    this.before = before ? item(before) : null;
     this.childNodes = childNodes;
-    this.item = options.item || identity;
-    this.applySplice = childNodes !== target.childNodes;
-    this.before = options.before || null;
-    this.placeHolder = target.ownerDocument.createComment('');
+    this.applySplice = isArray(childNodes);
+    this.placeHolder = (this.target || this.before).ownerDocument.createComment('');
   }
 
   DOMSplicer.prototype.splice = function splice(start, deleteCount) {
     var aLength = arguments.length;
     if (aLength < 1) return;
     var item = this.item;
-    var target = this.target;
+    var before = this.before;
+    var target = this.target || before.parentNode;
     var childNodes = this.childNodes;
     var placeHolder = this.placeHolder;
     var len = childNodes.length;
     var index = start < 0 ? max(len + start, 0) : min(start, len);
     var count = aLength < 2 ? len - index : min(max(deleteCount, 0), len - index);
-    target.insertBefore(placeHolder, index < len ? item(childNodes[index]) : this.before);
+    target.insertBefore(placeHolder, index < len ? item(childNodes[index]) : before);
     var copy = childNodes;
     var added = 1;
     if (this.applySplice) {

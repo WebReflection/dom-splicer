@@ -57,6 +57,18 @@ splicer.splice(-1);
 console.timeEnd();
 verify(splicer);
 
+const fragment = document.createDocumentFragment();
+fragment.appendChild(document.createComment('placeholder'));
+splicer = new DOMSplicer({
+  before: fragment.childNodes[0]
+});
+splicer.splice(0, 0, a, b, c, d, e);
+
+splicer = new DOMSplicer({
+  target: fragment,
+  childNodes: {length: 0}
+});
+splicer.splice(0, 100);
 
 function verify(splicer) {
   console.assert(

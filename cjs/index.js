@@ -1,6 +1,7 @@
 'use strict';
 /*! (c) Andrea Giammarchi (ISC) */
 
+const { isArray } = Array;
 const { min, max } = Math;
 const arraySplice = [].splice;
 
@@ -20,21 +21,25 @@ const remove = (target, item, list, i, length) => {
 
 // not using a class to avoid Babel bloat
 function DOMSplicer(options) {
-  const { target } = options;
-  const childNodes = options.childNodes || target.childNodes;
-  this.target = target;
+  const { before, target } = options;
+  const item = options.item || identity;
+  const childNodes = options.childNodes || (before ? [] : target.childNodes);
+  this.item = item;
+  this.target = target ? item(target) : null;
+  this.before = before ? item(before) : null;
   this.childNodes = childNodes;
-  this.item = options.item || identity;
-  this.applySplice = childNodes !== target.childNodes;
-  this.before = options.before || null;
-  this.placeHolder = target.ownerDocument.createComment('');
+  this.applySplice = isArray(childNodes);
+  this.placeHolder = (
+    this.target || this.before
+  ).ownerDocument.createComment('');
 }
 
 DOMSplicer.prototype.splice = function splice(start, deleteCount) {
   const aLength = arguments.length;
   if (aLength < 1) return;
   const item = this.item;
-  const target = this.target;
+  const before = this.before;
+  const target = this.target || before.parentNode;
   const childNodes = this.childNodes;
   const placeHolder = this.placeHolder;
   const len = childNodes.length;
@@ -46,7 +51,7 @@ DOMSplicer.prototype.splice = function splice(start, deleteCount) {
     min(max(deleteCount, 0), len - index);
   target.insertBefore(
     placeHolder,
-    index < len ? item(childNodes[index]) : this.before
+    index < len ? item(childNodes[index]) : before
   );
   let copy = childNodes;
   let added = 1;
