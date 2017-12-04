@@ -4,6 +4,10 @@
 
 A minimalist, performance oriented, splicer able to mutate an element's `childNodes` directly, or indirectly.
 
+### Alternative
+
+If you need to diff without direct `.splice` calls, check [domdiff](https://github.com/WebReflection/domdiff) out.
+
 ### Configuration
 
 The class constructor accepts an object with these properties:
